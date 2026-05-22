@@ -132,7 +132,8 @@ export function ContestPage() {
   const [submittingId, setSubmittingId] = useState<string | null>(null)
   const [showFocusModal, setShowFocusModal] = useState(false)
   const [hasOpenedProblem, setHasOpenedProblem] = useState(false)
-  const [submissionsLoaded, setSubmissionsLoaded] = useState(false)
+  const [submissionsLoadedFor, setSubmissionsLoadedFor] = useState<string | null>(null)
+  const submissionsLoaded = submissionsLoadedFor === session?.id
   const [problemsLoaded, setProblemsLoaded] = useState(false)
 
   const allSubmitted = problems.length > 0 && problems.every((p) => submissions[p.id]?.submitted)
@@ -154,7 +155,6 @@ export function ContestPage() {
   // Restore past submissions from the server on load / session change
   useEffect(() => {
     if (!session || !token) return
-    setSubmissionsLoaded(false)
     fetch(`/api/submissions?contestSessionId=${session.id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -165,9 +165,9 @@ export function ContestPage() {
           restored[problemId] = { submitted: true, isCorrect }
         }
         setSubmissions(restored)
-        setSubmissionsLoaded(true)
+        setSubmissionsLoadedFor(session.id)
       })
-      .catch(() => { setSubmissionsLoaded(true) })
+      .catch(() => { setSubmissionsLoadedFor(session.id) })
   }, [session, token])
 
   const handleSubmit = async (problem: Problem, answer: unknown) => {
