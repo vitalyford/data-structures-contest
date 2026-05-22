@@ -1,0 +1,80 @@
+export const en = {
+  // Auth
+  login: 'Login',
+  register: 'Register',
+  username: 'Username',
+  password: 'Password',
+  confirmPassword: 'Confirm Password',
+  joinCode: 'Class Join Code',
+  joinCodeHint: 'Ask your instructor for the 6-character code',
+  loginBtn: 'Sign In',
+  registerBtn: 'Create Account',
+  noAccount: "Don't have an account?",
+  hasAccount: 'Already have an account?',
+  passwordMismatch: 'Passwords do not match',
+  // Contest
+  loading: 'Loading...',
+  contestNotStarted: 'No active contest in your group yet.',
+  contestEnded: 'The contest has ended.',
+  timeLeft: 'Time Remaining',
+  problemList: 'Problems',
+  submit: 'Submit Answer',
+  submitting: 'Submitting...',
+  correct: 'Correct!',
+  wrong: 'Incorrect',
+  alreadySubmitted: 'Already submitted',
+  // Leaderboard
+  leaderboard: 'Leaderboard',
+  rank: 'Rank',
+  student: 'Student',
+  solved: 'Solved',
+  totalTime: 'Total Time',
+  focusViolations: 'Focus Violations',
+  // Problem status
+  unattempted: 'Not attempted',
+  // Focus
+  focusTitle: 'Focus Warning',
+  focusMessage: 'You switched away from the contest window. This event has been recorded.',
+  focusClose: 'Return to Contest',
+  // Admin
+  adminPanel: 'Admin Panel',
+  groups: 'Groups',
+  sessions: 'Contest Sessions',
+  createGroup: 'Create Group',
+  createSession: 'Create Session',
+  start: 'Start',
+  stop: 'Stop',
+  deleteBtn: 'Delete',
+  resetSubmission: 'Reset',
+  groupName: 'Group Name',
+  sessionName: 'Session Name',
+  duration: 'Duration (minutes)',
+  joinCodeLabel: 'Join Code',
+  students: 'Students',
+  noStudents: 'No students yet',
+  noSessions: 'No sessions yet',
+  noGroups: 'No groups yet',
+  active: 'Active',
+  inactive: 'Inactive',
+  // Nav
+  contestNav: 'Contest',
+  leaderboardNav: 'Leaderboard',
+  adminNav: 'Admin',
+  logoutBtn: 'Logout',
+  // Time format
+  minutesSuffix: 'min',
+  secondsSuffix: 's',
+  // Difficulty
+  easy: 'Easy',
+  medium: 'Medium',
+  hard: 'Hard',
+  // Topics
+  stacks: 'Stacks',
+  queues: 'Queues',
+  graphs: 'Graphs',
+  // Drag
+  dragHint: 'Drag items to the correct positions',
+  dropHere: 'Drop here',
+};
+
+export type Translations = typeof en;

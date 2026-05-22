@@ -1,0 +1,80 @@
+import type { Translations } from './en';
+
+export const zh: Translations = {
+  // Auth
+  login: '登录',
+  register: '注册',
+  username: '用户名',
+  password: '密码',
+  confirmPassword: '确认密码',
+  joinCode: '班级加入码',
+  joinCodeHint: '请向老师获取 6 字符码',
+  loginBtn: '登录',
+  registerBtn: '创建账户',
+  noAccount: '没有账户？',
+  hasAccount: '已有账户？',
+  passwordMismatch: '密码不匹配',
+  // Contest
+  loading: '加载中...',
+  contestNotStarted: '您的小组尚无活跃的竞赛。',
+  contestEnded: '竞赛已结束。',
+  timeLeft: '剩余时间',
+  problemList: '题目列表',
+  submit: '提交答案',
+  submitting: '提交中...',
+  correct: '回答正确！',
+  wrong: '回答错误 — 此题目已锁定。',
+  alreadySubmitted: '已提交',
+  // Leaderboard
+  leaderboard: '排行榜',
+  rank: '排名',
+  student: '学生',
+  solved: '解答数',
+  totalTime: '总时间',
+  focusViolations: '离开次数',
+  // Problem status
+  unattempted: '未作答',
+  // Focus
+  focusTitle: '专注警告',
+  focusMessage: '您切换离开了竞赛窗口，此事件已被记录。',
+  focusClose: '返回竞赛',
+  // Admin
+  adminPanel: '管理面板',
+  groups: '小组管理',
+  sessions: '竞赛场次',
+  createGroup: '创建小组',
+  createSession: '创建场次',
+  start: '开始',
+  stop: '停止',
+  deleteBtn: '删除',
+  resetSubmission: '重置',
+  groupName: '小组名称',
+  sessionName: '场次名称',
+  duration: '时长（分钟）',
+  joinCodeLabel: '加入码',
+  students: '学生',
+  noStudents: '暂无学生',
+  noSessions: '暂无场次',
+  noGroups: '暂无小组',
+  active: '进行中',
+  inactive: '未开始',
+  // Nav
+  contestNav: '竞赛',
+  leaderboardNav: '排行榜',
+  adminNav: '管理',
+  logoutBtn: '退出',
+  // Time format
+  minutesSuffix: '分',
+  secondsSuffix: '秒',
+  // Difficulty
+  easy: '简单',
+  medium: '中等',
+  hard: '困难',
+  // Topics
+  stacks: '栈',
+  queues: '队列',
+  graphs: '图',
+  // Drag
+  dragHint: '将元素拖到正确位置',
+  dropHere: '放在此处',
+};
