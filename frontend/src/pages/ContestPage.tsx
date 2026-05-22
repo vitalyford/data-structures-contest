@@ -131,8 +131,7 @@ export function ContestPage() {
   const [submissions, setSubmissions] = useState<Record<string, SubmissionState>>({})
   const [submittingId, setSubmittingId] = useState<string | null>(null)
   const [showFocusModal, setShowFocusModal] = useState(false)
-  const [hasOpenedProblem, setHasOpenedProblem] = useState(false)
-  const [submissionsLoadedFor, setSubmissionsLoadedFor] = useState<string | null>(null)
+  const [submissionsLoadedFor, setSubmissionsLoadedFor] = useState<number | null>(null)
   const submissionsLoaded = submissionsLoadedFor === session?.id
   const [problemsLoaded, setProblemsLoaded] = useState(false)
 
@@ -145,7 +144,6 @@ export function ContestPage() {
   })
 
   useEffect(() => {
-    setProblemsLoaded(false)
     fetch('/api/problems', { headers: { Authorization: `Bearer ${token}` } })
       .then((r) => r.json())
       .then((data) => { setProblems(data); setProblemsLoaded(true); })
@@ -266,12 +264,12 @@ export function ContestPage() {
                   return (
                     <button
                       key={p.id}
-                      onClick={() => { setSelected(p.id); setHasOpenedProblem(true); }}
+                      onClick={() => { setSelected(p.id); }}
                       className={`w-full text-left px-4 py-2.5 flex items-center gap-2 transition-colors ${
                         selected === p.id ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'
                       }`}
                     >
-                      <span className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                      <span className={`w-2 h-2 rounded-full shrink-0 ${
                         !sub ? 'bg-gray-300' : sub.isCorrect ? 'bg-blue-600' : 'bg-amber-500'
                       }`} />
                       <span className="text-sm truncate">{title}</span>
