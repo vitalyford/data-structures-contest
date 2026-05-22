@@ -46,7 +46,7 @@ export function ClickSequenceProblem({ problem, onSubmit, submitted, isCorrect, 
           />
         </div>
 
-        <div className="space-y-3 min-w-[200px]">
+        <div className="space-y-3 min-w-50">
           <p className="text-sm font-medium text-gray-700">Visit order:</p>
           <div className="flex flex-wrap gap-2">
             {sequence.map((id, i) => (

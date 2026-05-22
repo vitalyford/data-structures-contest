@@ -253,7 +253,7 @@ export function ContestPage() {
 
       <div className="flex h-[calc(100vh-64px)]">
         {/* Sidebar */}
-        <aside className="w-60 flex-shrink-0 border-r border-gray-100 bg-white overflow-y-auto py-4">
+        <aside className="w-60 shrink-0 border-r border-gray-100 bg-white overflow-y-auto py-4">
           {['stacks', 'queues', 'graphs'].map((topic) => {
             const group = problems.filter((p) => p.topic === topic)
             if (group.length === 0) return null

@@ -38,7 +38,7 @@ export function ClickCellsProblem({ problem, onSubmit, submitted, isCorrect, sub
               key={i}
               disabled={submitted}
               onClick={() => toggle(i)}
-              className={`flex flex-col items-center px-3 py-2 rounded-xl ring-1 text-sm font-medium min-w-[52px] transition-all ${
+              className={`flex flex-col items-center px-3 py-2 rounded-xl ring-1 text-sm font-medium min-w-13 transition-all ${
                 sel
                   ? submitted
                     ? isCorrect ? 'ring-blue-600 bg-blue-100 text-blue-900' : 'ring-amber-400 bg-amber-50 text-amber-800'

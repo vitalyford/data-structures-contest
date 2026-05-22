@@ -52,7 +52,7 @@ export function DragMatchProblem({ problem, onSubmit, submitted, isCorrect, subm
               key={item.id}
               onDragOver={(e) => e.preventDefault()}
               onDrop={() => handleDrop(item.id)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl ring-1 min-w-[160px] min-h-[44px] transition-colors ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl ring-1 min-w-40 min-h-11 transition-colors ${
                 matches[item.id] ? 'ring-blue-300 bg-blue-50' : 'ring-gray-200 bg-white'
               }`}
             >
