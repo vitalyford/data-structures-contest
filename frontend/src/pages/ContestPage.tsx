@@ -132,12 +132,13 @@ export function ContestPage() {
   const [submittingId, setSubmittingId] = useState<string | null>(null)
   const [showFocusModal, setShowFocusModal] = useState(false)
   const [hasOpenedProblem, setHasOpenedProblem] = useState(false)
+  const [submissionsLoaded, setSubmissionsLoaded] = useState(false)
 
   const allSubmitted = problems.length > 0 && problems.every((p) => submissions[p.id]?.submitted)
 
   useFocusTracker({
     contestSessionId: session?.id ?? null,
-    enabled: !!session && !allSubmitted,
+    enabled: !!session && submissionsLoaded && !allSubmitted,
     onViolation: useCallback(() => setShowFocusModal(true), []),
   })
 
@@ -151,6 +152,7 @@ export function ContestPage() {
   // Restore past submissions from the server on load / session change
   useEffect(() => {
     if (!session || !token) return
+    setSubmissionsLoaded(false)
     fetch(`/api/submissions?contestSessionId=${session.id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -161,8 +163,9 @@ export function ContestPage() {
           restored[problemId] = { submitted: true, isCorrect }
         }
         setSubmissions(restored)
+        setSubmissionsLoaded(true)
       })
-      .catch(() => {})
+      .catch(() => { setSubmissionsLoaded(true) })
   }, [session, token])
 
   const handleSubmit = async (problem: Problem, answer: unknown) => {
