@@ -13,11 +13,15 @@ export function useFocusTracker({ contestSessionId, enabled = true, onViolation 
   const { token } = useAuth();
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastFiredAt = useRef<number>(0);
+  // Kept in sync synchronously every render so closures always read the current value.
+  const enabledRef = useRef(enabled);
+  enabledRef.current = enabled;
 
   useEffect(() => {
     if (!contestSessionId || !token || !enabled) return;
 
     const report = () => {
+      if (!enabledRef.current) return; // re-check — stale debounce timers may fire after enabled→false
       const now = Date.now();
       if (now - lastFiredAt.current < 3000) return; // deduplicate within 3s
       lastFiredAt.current = now;

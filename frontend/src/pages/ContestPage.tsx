@@ -133,19 +133,21 @@ export function ContestPage() {
   const [showFocusModal, setShowFocusModal] = useState(false)
   const [hasOpenedProblem, setHasOpenedProblem] = useState(false)
   const [submissionsLoaded, setSubmissionsLoaded] = useState(false)
+  const [problemsLoaded, setProblemsLoaded] = useState(false)
 
   const allSubmitted = problems.length > 0 && problems.every((p) => submissions[p.id]?.submitted)
 
   useFocusTracker({
     contestSessionId: session?.id ?? null,
-    enabled: !!session && submissionsLoaded && !allSubmitted,
+    enabled: !!session && submissionsLoaded && problemsLoaded && !allSubmitted,
     onViolation: useCallback(() => setShowFocusModal(true), []),
   })
 
   useEffect(() => {
+    setProblemsLoaded(false)
     fetch('/api/problems', { headers: { Authorization: `Bearer ${token}` } })
       .then((r) => r.json())
-      .then(setProblems)
+      .then((data) => { setProblems(data); setProblemsLoaded(true); })
       .catch(() => {})
   }, [token])
 

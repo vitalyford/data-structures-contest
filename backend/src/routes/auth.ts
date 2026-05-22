@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import db from '../db/database';
 import { broadcast } from '../websocket/broadcaster';
+import { problems } from '../data/problems';
 
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'change-me-in-production';
@@ -80,8 +81,14 @@ router.post('/login', (req: Request, res: Response): void => {
       ).get(user.id, activeSession.id);
 
       if (previousLogin) {
-        db.prepare('INSERT INTO focus_events (user_id, contest_session_id) VALUES (?, ?)').run(user.id, activeSession.id);
-        broadcast(activeSession.id);
+        const { cnt } = db.prepare(
+          'SELECT COUNT(*) as cnt FROM submissions WHERE user_id = ? AND contest_session_id = ?'
+        ).get(user.id, activeSession.id) as { cnt: number };
+
+        if (cnt < problems.length) {
+          db.prepare('INSERT INTO focus_events (user_id, contest_session_id) VALUES (?, ?)').run(user.id, activeSession.id);
+          broadcast(activeSession.id);
+        }
       }
 
       db.prepare('INSERT INTO contest_logins (user_id, contest_session_id) VALUES (?, ?)').run(user.id, activeSession.id);
