@@ -16,7 +16,7 @@ import { ClickEdgesProblem } from '../components/problems/ClickEdgesProblem'
 import { DragPriorityProblem } from '../components/problems/DragPriorityProblem'
 import { ClickCellsProblem } from '../components/problems/ClickCellsProblem'
 
-import type { Problem } from '../../../backend/src/data/problems'
+import type { Problem } from '../types/problems'
 
 interface SubmissionState {
   submitted: boolean
