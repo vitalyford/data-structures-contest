@@ -1,4 +1,4 @@
-FROM node:24-alpine
+FROM node:25.4.0-alpine3.23
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ COPY src ./src
 RUN npm install -D typescript tsx
 RUN npx tsc
 
-FROM node:24-alpine
+FROM node:25.4.0-alpine3.23
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --omit=dev
