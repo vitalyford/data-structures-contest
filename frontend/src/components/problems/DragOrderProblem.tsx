@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   DndContext,
   DragOverlay,
@@ -76,6 +76,9 @@ export function DragOrderProblem({ problem, onSubmit, submitted, isCorrect, subm
 
   // slots: array of length `data.slots`, each entry is a letter or null (empty)
   const [slots, setSlots] = useState<(string | null)[]>(Array(data.slots).fill(null));
+  // Ref kept in sync with slots so the submit handler always reads the latest value,
+  // even if the user clicks Submit before React flushes a pending drag-end re-render.
+  const slotsRef = useRef(slots);
   // pool: items not yet placed in slots
   const [pool, setPool] = useState<string[]>(data.pool);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -159,13 +162,12 @@ export function DragOrderProblem({ problem, onSubmit, submitted, isCorrect, subm
       }
     }
 
+    slotsRef.current = newSlots;
     setSlots(newSlots);
     setPool(newPool);
   };
 
   const activeLabel = activeId ? letterFromId(activeId) : null;
-  // submitted answer: only the filled slot values, in order (bottom → top)
-  const slotAnswer = slots.map((v) => v ?? '');
   const isHorizontal = data.layout === 'horizontal';
 
   return (
@@ -243,8 +245,8 @@ export function DragOrderProblem({ problem, onSubmit, submitted, isCorrect, subm
 
       {!submitted && (
         <button
-          onClick={() => onSubmit(slotAnswer)}
-          disabled={slots.some((v) => v === null) || submitting}
+          onClick={() => onSubmit(slotsRef.current.map((v) => v ?? ''))}
+          disabled={slots.some((v) => v === null) || submitting || activeId !== null}
           className="bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-medium px-6 py-2.5 rounded-xl transition-colors"
         >
           {submitting ? t.submitting : t.submit}
