@@ -57,7 +57,7 @@ export function ClickSequenceProblem({ problem, onSubmit, submitted, isCorrect, 
           </div>
           {!submitted && (
             <button onClick={reset} className="text-xs text-gray-400 hover:text-gray-600 underline">
-              Reset
+              {t.resetSubmission}
             </button>
           )}
         </div>
