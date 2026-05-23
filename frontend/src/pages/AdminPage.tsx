@@ -34,6 +34,8 @@ export function AdminPage() {
   const [newGroupName, setNewGroupName] = useState('')
   const [newSession, setNewSession] = useState({ name: '', groupId: '', duration: '120' })
   const [error, setError] = useState('')
+  const [editingSessionId, setEditingSessionId] = useState<number | null>(null)
+  const [editingDuration, setEditingDuration] = useState('')
 
   const authHeader = useCallback(() => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }), [token])
 
@@ -111,6 +113,21 @@ export function AdminPage() {
     await fetch(`/api/admin/sessions/${id}`, { method: 'DELETE', headers: authHeader() })
     if (selectedSession === id) setSelectedSession(null)
     fetchSessions()
+  }
+
+  const saveSessionDuration = async (id: number) => {
+    const dur = Number(editingDuration)
+    if (!dur || dur < 1) return
+    setError('')
+    try {
+      const r = await fetch(`/api/admin/sessions/${id}`, {
+        method: 'PATCH', headers: authHeader(),
+        body: JSON.stringify({ durationMinutes: dur })
+      })
+      if (!r.ok) throw new Error((await r.json()).error)
+      setEditingSessionId(null)
+      fetchSessions()
+    } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Error') }
   }
 
   return (
@@ -197,12 +214,30 @@ export function AdminPage() {
                             {isActive ? t.active : t.inactive}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-400">{group?.name} · {s.duration_minutes} min</p>
+                        <p className="text-xs text-gray-400">{group?.name} · {editingSessionId === s.id ? (
+                          <span className="inline-flex items-center gap-1" onClick={e => e.stopPropagation()}>
+                            <input
+                              type="number" min={1}
+                              value={editingDuration}
+                              onChange={e => setEditingDuration(e.target.value)}
+                              className="w-16 px-1 py-0.5 rounded ring-1 ring-blue-400 text-xs text-gray-800 focus:outline-none"
+                            />
+                            <span className="text-gray-400">min</span>
+                          </span>
+                        ) : `${s.duration_minutes} min`}</p>
                         <div className="flex gap-2 mt-2">
                           {!isActive ? (
                             <button onClick={e => { e.stopPropagation(); startSession(s.id) }} className="text-xs bg-green-600 text-white px-3 py-1 rounded-lg hover:bg-green-700">{t.start}</button>
                           ) : (
                             <button onClick={e => { e.stopPropagation(); stopSession(s.id) }} className="text-xs bg-orange-500 text-white px-3 py-1 rounded-lg hover:bg-orange-600">{t.stop}</button>
+                          )}
+                          {editingSessionId === s.id ? (
+                            <>
+                              <button onClick={e => { e.stopPropagation(); saveSessionDuration(s.id) }} className="text-xs bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700">{t.saveBtn}</button>
+                              <button onClick={e => { e.stopPropagation(); setEditingSessionId(null) }} className="text-xs text-gray-500 hover:text-gray-700 font-medium">{t.cancelBtn}</button>
+                            </>
+                          ) : (
+                            <button onClick={e => { e.stopPropagation(); setEditingSessionId(s.id); setEditingDuration(String(s.duration_minutes)) }} className="text-xs text-blue-500 hover:text-blue-700 font-medium">{t.editBtn}</button>
                           )}
                           <button onClick={e => { e.stopPropagation(); deleteSession(s.id) }} className="text-xs text-red-500 hover:text-red-700 font-medium">{t.deleteBtn}</button>
                         </div>

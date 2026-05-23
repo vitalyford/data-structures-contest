@@ -77,8 +77,26 @@ router.post('/sessions/:id/stop', (req: Request, res: Response): void => {
   res.json({ ok: true });
 });
 
+router.patch('/sessions/:id', (req: Request, res: Response): void => {
+  const id = Number(req.params.id);
+  const { durationMinutes } = req.body as { durationMinutes?: number };
+  if (!durationMinutes || durationMinutes < 1) {
+    res.status(400).json({ error: 'durationMinutes must be a positive integer' });
+    return;
+  }
+  const result = db.prepare('UPDATE contest_sessions SET duration_minutes = ? WHERE id = ?').run(durationMinutes, id);
+  if (result.changes === 0) { res.status(404).json({ error: 'Session not found' }); return; }
+  res.json({ ok: true });
+});
+
 router.delete('/sessions/:id', (req: Request, res: Response): void => {
-  db.prepare('DELETE FROM contest_sessions WHERE id = ?').run(req.params.id);
+  const id = Number(req.params.id);
+  db.transaction(() => {
+    db.prepare('DELETE FROM contest_logins WHERE contest_session_id = ?').run(id);
+    db.prepare('DELETE FROM focus_events WHERE contest_session_id = ?').run(id);
+    db.prepare('DELETE FROM submissions WHERE contest_session_id = ?').run(id);
+    db.prepare('DELETE FROM contest_sessions WHERE id = ?').run(id);
+  })();
   res.json({ ok: true });
 });
 
