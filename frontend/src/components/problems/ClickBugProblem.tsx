@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Problem } from '../../../../backend/src/data/problems';
+import type { Problem } from '../../types/problems';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 interface Props {

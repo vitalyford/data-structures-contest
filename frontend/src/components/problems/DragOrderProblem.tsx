@@ -15,7 +15,7 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import type { Problem } from '../../../../backend/src/data/problems';
+import type { Problem } from '../../types/problems';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 interface Props {
