@@ -10,6 +10,7 @@ COPY src ./src
 
 RUN npm install -D typescript tsx
 RUN npx tsc
+RUN cp src/db/schema.sql dist/db/schema.sql
 
 FROM node:25.4.0-alpine3.23
 WORKDIR /app
