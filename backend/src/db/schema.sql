@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS contest_sessions (
   group_id INTEGER NOT NULL REFERENCES groups(id),
   name TEXT NOT NULL,
   duration_minutes INTEGER NOT NULL DEFAULT 90,
+  problem_set TEXT NOT NULL DEFAULT 'A',
   start_time TEXT,
   is_active INTEGER NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))

@@ -1,7 +1,7 @@
 import { Router, Response } from 'express';
 import db from '../db/database';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
-import { problems, validateAnswer } from '../data/problems';
+import { getProblems, validateAnswer } from '../data/problems';
 import { broadcast } from '../websocket/broadcaster';
 
 const router = Router();
@@ -43,8 +43,8 @@ router.post('/', authMiddleware, (req: AuthRequest, res: Response): void => {
 
   // Verify session is active
   const session = db.prepare(
-    'SELECT id, start_time, duration_minutes, is_active FROM contest_sessions WHERE id = ?'
-  ).get(contestSessionId) as { id: number; start_time: string; duration_minutes: number; is_active: number } | undefined;
+    'SELECT id, start_time, duration_minutes, is_active, problem_set FROM contest_sessions WHERE id = ?'
+  ).get(contestSessionId) as { id: number; start_time: string; duration_minutes: number; is_active: number; problem_set: string } | undefined;
 
   if (!session || !session.is_active) {
     res.status(400).json({ error: 'Contest session is not active' });
@@ -60,6 +60,7 @@ router.post('/', authMiddleware, (req: AuthRequest, res: Response): void => {
     return;
   }
 
+  const problems = getProblems(session.problem_set === 'B' ? 'B' : 'A');
   const problem = problems.find(p => p.id === problemId);
   if (!problem) {
     res.status(404).json({ error: 'Problem not found' });

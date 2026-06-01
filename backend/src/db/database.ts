@@ -18,4 +18,10 @@ const schema = fs.readFileSync(
 );
 db.exec(schema);
 
+// Migrate: add problem_set column to existing databases
+const cols = db.prepare("PRAGMA table_info(contest_sessions)").all() as { name: string }[];
+if (!cols.some(c => c.name === 'problem_set')) {
+  db.prepare("ALTER TABLE contest_sessions ADD COLUMN problem_set TEXT NOT NULL DEFAULT 'A'").run();
+}
+
 export default db;

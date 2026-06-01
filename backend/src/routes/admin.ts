@@ -48,15 +48,16 @@ router.get('/sessions', (_req: Request, res: Response): void => {
 });
 
 router.post('/sessions', (req: Request, res: Response): void => {
-  const { groupId, name, durationMinutes } = req.body as { groupId: number; name: string; durationMinutes: number };
+  const { groupId, name, durationMinutes, problemSet } = req.body as { groupId: number; name: string; durationMinutes: number; problemSet?: string };
   if (!groupId || !name || !durationMinutes) {
     res.status(400).json({ error: 'groupId, name, durationMinutes are required' });
     return;
   }
+  const set = problemSet === 'B' ? 'B' : 'A';
   const result = db.prepare(
-    'INSERT INTO contest_sessions (group_id, name, duration_minutes) VALUES (?, ?, ?)'
-  ).run(groupId, name, durationMinutes);
-  res.json({ id: result.lastInsertRowid, groupId, name, durationMinutes, is_active: 0 });
+    'INSERT INTO contest_sessions (group_id, name, duration_minutes, problem_set) VALUES (?, ?, ?, ?)'
+  ).run(groupId, name, durationMinutes, set);
+  res.json({ id: result.lastInsertRowid, groupId, name, durationMinutes, problem_set: set, is_active: 0 });
 });
 
 router.post('/sessions/:id/start', (req: Request, res: Response): void => {

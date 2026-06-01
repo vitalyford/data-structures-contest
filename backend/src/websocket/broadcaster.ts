@@ -1,6 +1,6 @@
 import { WebSocket, WebSocketServer } from 'ws';
 import db from '../db/database';
-import { problems } from '../data/problems';
+import { getProblems } from '../data/problems';
 
 let wss: WebSocketServer | null = null;
 
@@ -37,9 +37,13 @@ export function broadcast(sessionId: number): void {
 
 export function buildLeaderboard(sessionId: number): object {
   const session = db.prepare('SELECT * FROM contest_sessions WHERE id = ?').get(sessionId) as {
-    id: number; name: string; group_id: number; duration_minutes: number; start_time: string; is_active: number
+    id: number; name: string; group_id: number; duration_minutes: number; start_time: string; is_active: number; problem_set: string
   } | undefined;
   if (!session) return { session: null, rows: [] };
+
+  const problemList = getProblems(session.problem_set === 'B' ? 'B' : 'A');
+  const problemIds = problemList.map(p => p.id);
+  const pointsMap = new Map(problemList.map(p => [p.id, p.points]));
 
   const students = db.prepare(
     'SELECT id, username FROM users WHERE group_id = ? AND role = ?'
@@ -55,13 +59,12 @@ export function buildLeaderboard(sessionId: number): object {
 
   const focusMap = new Map(focusCounts.map(f => [f.user_id, f.cnt]));
 
-  const problemIds = problems.map(p => p.id);
-
   const rows = students.map(student => {
     const studentSubs = subs.filter(s => s.user_id === student.id);
     const subMap = new Map(studentSubs.map(s => [s.problem_id, s]));
 
     let solved = 0;
+    let points = 0;
     let totalTime = 0;
     const problemStatus: Record<string, 'correct' | 'wrong' | 'unattempted'> = {};
 
@@ -71,6 +74,7 @@ export function buildLeaderboard(sessionId: number): object {
       if (sub.is_correct) {
         problemStatus[pid] = 'correct';
         solved++;
+        points += pointsMap.get(pid) ?? 0;
         totalTime += sub.elapsed_seconds;
       } else {
         problemStatus[pid] = 'wrong';
@@ -81,6 +85,7 @@ export function buildLeaderboard(sessionId: number): object {
       userId: student.id,
       username: student.username,
       solved,
+      points,
       totalTime,
       perProblem: Object.fromEntries(
         problemIds.map(pid => [pid, {
@@ -92,8 +97,8 @@ export function buildLeaderboard(sessionId: number): object {
     };
   });
 
-  // Sort: solved DESC, totalTime ASC
-  rows.sort((a, b) => b.solved - a.solved || a.totalTime - b.totalTime);
+  // Sort: points DESC, totalTime ASC
+  rows.sort((a, b) => b.points - a.points || a.totalTime - b.totalTime);
 
   return {
     session: {

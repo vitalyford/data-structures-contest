@@ -28,6 +28,8 @@ export interface Problem {
   answer: unknown;
 }
 
+import { problemsB } from './problemsB';
+
 export const problems: Problem[] = [
   // ══════════════════════════════════════════════════
   // STACKS
@@ -807,7 +809,7 @@ export const problems: Problem[] = [
           },
           {
             id: 'g5', label: 'Graph 5',
-            nodes: [{ id: 'A', x: 20, y: 60 }, { id: 'B', x: 70, y: 60 }, { id: 'C', x: 120, y: 60 }, { id: 'D', x: 170, y: 60 }, { id: 'E', x: 220, y: 60 }],
+            nodes: [{ id: 'A', x: 20, y: 40 }, { id: 'B', x: 80, y: 100 }, { id: 'C', x: 140, y: 40 }, { id: 'D', x: 200, y: 100 }, { id: 'E', x: 260, y: 40 }],
             edges: [{ from: 'A', to: 'B' }, { from: 'B', to: 'C' }, { from: 'C', to: 'D' }, { from: 'D', to: 'E' }],
             directed: false,
           },
@@ -860,7 +862,7 @@ export const problems: Problem[] = [
           },
           {
             id: 'g5', label: '图 5',
-            nodes: [{ id: 'A', x: 20, y: 60 }, { id: 'B', x: 70, y: 60 }, { id: 'C', x: 120, y: 60 }, { id: 'D', x: 170, y: 60 }, { id: 'E', x: 220, y: 60 }],
+            nodes: [{ id: 'A', x: 20, y: 40 }, { id: 'B', x: 80, y: 100 }, { id: 'C', x: 140, y: 40 }, { id: 'D', x: 200, y: 100 }, { id: 'E', x: 260, y: 40 }],
             edges: [{ from: 'A', to: 'B' }, { from: 'B', to: 'C' }, { from: 'C', to: 'D' }, { from: 'D', to: 'E' }],
             directed: false,
           },
@@ -1033,17 +1035,35 @@ export const problems: Problem[] = [
   },
 ];
 
+export function getProblems(set: 'A' | 'B' = 'A'): Problem[] {
+  return set === 'B' ? problemsB : problems;
+}
+
 export function validateAnswer(problem: Problem, submitted: unknown): boolean {
   const correct = problem.answer;
 
   if (problem.type === 'drag-priority' || problem.type === 'drag-order' || problem.type === 'click-sequence') {
+    // Special: topological sort problems have null answer and are validated via DAG constraints
+    if (problem.id === 'graph-07' || problem.id === 'graph-b-07') {
+      const order = submitted as string[];
+      if (!Array.isArray(order)) return false;
+      const edges = (problem.en.data as { edges: { from: string; to: string }[] }).edges;
+      const pool = (problem.en.data as { pool: string[] }).pool;
+      if (order.length !== pool.length) return false;
+      for (const edge of edges) {
+        const fromIdx = order.indexOf(edge.from);
+        const toIdx = order.indexOf(edge.to);
+        if (fromIdx === -1 || toIdx === -1 || fromIdx >= toIdx) return false;
+      }
+      return true;
+    }
     // Ordered comparison: must match exact sequence
     if (!Array.isArray(correct) || !Array.isArray(submitted)) return false;
     return JSON.stringify(correct) === JSON.stringify(submitted);
   }
 
   if (problem.id === 'graph-07') {
-    // Topological sort: validate submitted ordering against DAG edges
+    // Legacy path — now handled above, keeping for safety
     const order = submitted as string[];
     if (!Array.isArray(order) || order.length !== 8) return false;
     const edges = (problem.en.data as { edges: { from: string; to: string }[] }).edges;

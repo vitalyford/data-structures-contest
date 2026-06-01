@@ -30,6 +30,7 @@ export const zh: Translations = {
   rank: '排名',
   student: '学生',
   solved: '解答数',
+  points: '得分',
   totalTime: '总时间',
   focusViolations: '离开次数',
   // Problem status
@@ -54,6 +55,9 @@ export const zh: Translations = {
   groupName: '小组名称',
   sessionName: '场次名称',
   duration: '时长（分钟）',
+  problemSet: '题目集',
+  problemSetA: 'A 组（标准）',
+  problemSetB: 'B 组（较难）',
   joinCodeLabel: '加入码',
   students: '学生',
   noStudents: '暂无学生',

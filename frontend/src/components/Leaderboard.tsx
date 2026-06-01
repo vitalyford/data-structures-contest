@@ -22,6 +22,7 @@ export function Leaderboard({ data }: LeaderboardProps) {
           <tr className="border-b border-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">
             <th className="px-4 py-3 w-12">{t.rank}</th>
             <th className="px-4 py-3">{t.student}</th>
+            <th className="px-4 py-3 text-center">{t.points}</th>
             <th className="px-4 py-3 text-center">{t.solved}</th>
             <th className="px-4 py-3 text-center">{t.totalTime}</th>
             <th className="px-4 py-3 text-center">{t.focusViolations}</th>
@@ -39,7 +40,8 @@ export function Leaderboard({ data }: LeaderboardProps) {
                 {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : idx + 1}
               </td>
               <td className="px-4 py-3 font-medium text-gray-900">{row.username}</td>
-              <td className="px-4 py-3 text-center font-semibold text-blue-600">{row.solved}</td>
+              <td className="px-4 py-3 text-center font-semibold text-blue-600">{row.points}</td>
+              <td className="px-4 py-3 text-center text-gray-600">{row.solved}</td>
               <td className="px-4 py-3 text-center text-gray-600">{formatTime(row.totalTime)}</td>
               <td className="px-4 py-3 text-center text-gray-500">
                 {row.focusViolations > 0 ? (

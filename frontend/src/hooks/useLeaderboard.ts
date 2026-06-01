@@ -4,6 +4,7 @@ export interface LeaderboardRow {
   userId: number;
   username: string;
   solved: number;
+  points: number;
   totalTime: number;
   focusViolations: number;
   perProblem: Record<string, { submitted: boolean; isCorrect: boolean }>;

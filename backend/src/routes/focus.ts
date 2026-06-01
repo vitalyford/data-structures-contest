@@ -2,7 +2,7 @@ import { Router, Response } from 'express';
 import db from '../db/database';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { broadcast } from '../websocket/broadcaster';
-import { problems } from '../data/problems';
+import { getProblems } from '../data/problems';
 
 const router = Router();
 
@@ -15,8 +15,8 @@ router.post('/', authMiddleware, (req: AuthRequest, res: Response): void => {
     return;
   }
 
-  const session = db.prepare('SELECT id, is_active FROM contest_sessions WHERE id = ?').get(contestSessionId) as
-    { id: number; is_active: number } | undefined;
+  const session = db.prepare('SELECT id, is_active, problem_set FROM contest_sessions WHERE id = ?').get(contestSessionId) as
+    { id: number; is_active: number; problem_set: string } | undefined;
 
   if (!session || !session.is_active) {
     res.status(400).json({ error: 'Session not active' });
@@ -28,7 +28,7 @@ router.post('/', authMiddleware, (req: AuthRequest, res: Response): void => {
     'SELECT COUNT(*) as cnt FROM submissions WHERE user_id = ? AND contest_session_id = ?'
   ).get(userId, contestSessionId) as { cnt: number };
 
-  if (cnt >= problems.length) {
+  if (cnt >= getProblems(session.problem_set === 'B' ? 'B' : 'A').length) {
     res.json({ ok: true });
     return;
   }

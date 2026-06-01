@@ -6,7 +6,7 @@ import { Leaderboard } from '../components/Leaderboard'
 import { useLeaderboard } from '../hooks/useLeaderboard'
 
 interface Group { id: number; name: string; join_code: string; created_at: string }
-interface Session { id: number; name: string; group_id: number; duration_minutes: number; is_active: number; start_time: string | null }
+interface Session { id: number; name: string; group_id: number; duration_minutes: number; is_active: number; start_time: string | null; problem_set: string }
 interface SubmissionRow { id: number; user_id: number; username: string; problem_id: string; is_correct: number; elapsed_seconds: number; submitted_at: string }
 
 function SessionLeaderboardPanel({ session, token, groups }: { session: Session; token: string | null; groups: Group[] }) {
@@ -32,7 +32,7 @@ export function AdminPage() {
   const [selectedSession, setSelectedSession] = useState<number | null>(null)
   const [sessionSubmissions, setSessionSubmissions] = useState<SubmissionRow[]>([])
   const [newGroupName, setNewGroupName] = useState('')
-  const [newSession, setNewSession] = useState({ name: '', groupId: '', duration: '120' })
+  const [newSession, setNewSession] = useState({ name: '', groupId: '', duration: '120', problemSet: 'A' })
   const [error, setError] = useState('')
   const [editingSessionId, setEditingSessionId] = useState<number | null>(null)
   const [editingDuration, setEditingDuration] = useState('')
@@ -91,10 +91,10 @@ export function AdminPage() {
     try {
       const r = await fetch('/api/admin/sessions', {
         method: 'POST', headers: authHeader(),
-        body: JSON.stringify({ name: newSession.name, groupId: Number(newSession.groupId), durationMinutes: Number(newSession.duration) })
+        body: JSON.stringify({ name: newSession.name, groupId: Number(newSession.groupId), durationMinutes: Number(newSession.duration), problemSet: newSession.problemSet })
       })
       if (!r.ok) throw new Error((await r.json()).error)
-      setNewSession({ name: '', groupId: '', duration: '120' })
+      setNewSession({ name: '', groupId: '', duration: '120', problemSet: 'A' })
       fetchSessions()
     } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Error') }
   }
@@ -192,6 +192,11 @@ export function AdminPage() {
                 <input type="number" value={newSession.duration} onChange={e => setNewSession(p => ({ ...p, duration: e.target.value }))}
                   placeholder={t.duration} min={1}
                   className="w-full px-3 py-2 rounded-xl ring-1 ring-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <select value={newSession.problemSet} onChange={e => setNewSession(p => ({ ...p, problemSet: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-xl ring-1 ring-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="A">{t.problemSetA}</option>
+                  <option value="B">{t.problemSetB}</option>
+                </select>
                 <button onClick={createSession} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-xl text-sm transition-colors">
                   {t.createSession}
                 </button>
@@ -212,6 +217,9 @@ export function AdminPage() {
                           <span className="font-medium text-sm text-gray-800">{s.name}</span>
                           <span className={`text-xs px-2 py-0.5 rounded-full ring-1 ${isActive ? 'text-green-600 bg-green-50 ring-green-200' : 'text-gray-400 bg-gray-50 ring-gray-200'}`}>
                             {isActive ? t.active : t.inactive}
+                          </span>
+                          <span className="text-xs px-2 py-0.5 rounded-full ring-1 text-blue-600 bg-blue-50 ring-blue-200">
+                            {t.problemSet} {s.problem_set ?? 'A'}
                           </span>
                         </div>
                         <p className="text-xs text-gray-400">{group?.name} · {editingSessionId === s.id ? (

@@ -28,6 +28,7 @@ export const en = {
   rank: 'Rank',
   student: 'Student',
   solved: 'Solved',
+  points: 'Points',
   totalTime: 'Total Time',
   focusViolations: 'Focus Violations',
   // Problem status
@@ -52,6 +53,9 @@ export const en = {
   groupName: 'Group Name',
   sessionName: 'Session Name',
   duration: 'Duration (minutes)',
+  problemSet: 'Problem Set',
+  problemSetA: 'Set A (Standard)',
+  problemSetB: 'Set B (Harder)',
   joinCodeLabel: 'Join Code',
   students: 'Students',
   noStudents: 'No students yet',
