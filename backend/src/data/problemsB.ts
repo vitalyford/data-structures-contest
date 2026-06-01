@@ -170,7 +170,7 @@ export const problemsB: Problem[] = [
     en: {
       title: 'Infix to Postfix Conversion',
       teaching: `**Postfix notation** (Reverse Polish Notation) eliminates parentheses by placing the operator **after** its operands.\n\nAlgorithm using a stack:\n1. Read tokens left to right.\n2. If operand (number/variable): output it immediately.\n3. If operator: pop and output all stack operators with **higher or equal precedence**, then push the new operator. Precedence: * and / beat + and -.\n4. At the end: pop and output everything remaining on the stack.\n\n**Example:** \`2 + 3\` → \`2 3 +\`\n**Example:** \`2 + 3 * 4\` → \`2 3 4 * +\` (multiplication before addition)`,
-      description: `Convert the infix expression to postfix notation:\n\n**\`3 + 4 * 2 - 1\`**\n\n*(Standard operator precedence: \`*\` and \`/\` bind more tightly than \`+\` and \`-\`)*`,
+      description: `Convert the infix expression to postfix notation:\n\n\`3 + 4 * 2 - 1\`\n\n(Standard operator precedence: \`*\` and \`/\` bind more tightly than \`+\` and \`-\`)`,
       data: {
         options: [
           { id: 'A', text: '3 4 + 2 * 1 -' },
@@ -183,7 +183,7 @@ export const problemsB: Problem[] = [
     zh: {
       title: '中缀转后缀',
       teaching: `**后缀表示法**（逆波兰表示法）通过将运算符置于操作数**之后**来消除括号。\n\n使用栈的算法：\n1. 从左到右读取标记。\n2. 若为操作数（数字/变量）：立即输出。\n3. 若为运算符：弹出并输出栈中所有**优先级更高或相等**的运算符，然后将新运算符压栈。优先级：* 和 / 高于 + 和 -。\n4. 最后：将栈中剩余所有元素弹出并输出。\n\n**示例：** \`2 + 3\` → \`2 3 +\`\n**示例：** \`2 + 3 * 4\` → \`2 3 4 * +\`（乘法先于加法）`,
-      description: `将中缀表达式转换为后缀表示法：\n\n**\`3 + 4 * 2 - 1\`**\n\n*（标准运算符优先级：\`*\` 和 \`/\` 比 \`+\` 和 \`-\` 绑定更紧）*`,
+      description: `将中缀表达式转换为后缀表示法：\n\n\`3 + 4 * 2 - 1\`\n\n（标准运算符优先级：\`*\` 和 \`/\` 比 \`+\` 和 \`-\` 绑定更紧）`,
       data: {
         options: [
           { id: 'A', text: '3 4 + 2 * 1 -' },

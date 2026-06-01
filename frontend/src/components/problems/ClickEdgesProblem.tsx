@@ -34,14 +34,14 @@ export function ClickEdgesProblem({ problem, onSubmit, submitted, isCorrect, sub
     });
   };
 
-  const PAD = 32;
+  const PAD = 322;
   const canvasWidth = Math.max(...data.nodes.map((n) => n.x)) + PAD;
   const canvasHeight = Math.max(...data.nodes.map((n) => n.y)) + PAD;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 h-full">
       <p className="text-sm text-gray-600">Click edges to select/deselect them.</p>
-      <div className="rounded-xl ring-1 ring-gray-200 bg-white p-4 inline-block">
+      <div className="rounded-xl ring-1 ring-gray-200 bg-white p-4">
         <GraphCanvas
           nodes={data.nodes}
           edges={data.edges}
