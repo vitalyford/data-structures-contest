@@ -59,6 +59,7 @@ export const en = {
   joinCodeLabel: 'Join Code',
   students: 'Students',
   noStudents: 'No students yet',
+  removeStudent: 'Remove',
   noSessions: 'No sessions yet',
   noGroups: 'No groups yet',
   active: 'Active',

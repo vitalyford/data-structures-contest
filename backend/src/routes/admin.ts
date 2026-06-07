@@ -137,6 +137,19 @@ router.get('/groups/:id/students', (req: Request, res: Response): void => {
   res.json(rows);
 });
 
+router.delete('/groups/:groupId/students/:userId', (req: Request, res: Response): void => {
+  const { groupId, userId } = req.params;
+  const user = db.prepare('SELECT id FROM users WHERE id = ? AND group_id = ?').get(userId, groupId) as { id: number } | undefined;
+  if (!user) { res.status(404).json({ error: 'User not found in group' }); return; }
+  db.transaction(() => {
+    db.prepare('DELETE FROM contest_logins WHERE user_id = ?').run(userId);
+    db.prepare('DELETE FROM focus_events WHERE user_id = ?').run(userId);
+    db.prepare('DELETE FROM submissions WHERE user_id = ?').run(userId);
+    db.prepare('DELETE FROM users WHERE id = ?').run(userId);
+  })();
+  res.json({ ok: true });
+});
+
 router.get('/sessions/:sessionId/submissions', (req: Request, res: Response): void => {
   const rows = db.prepare(`
     SELECT s.id, s.user_id, u.username, s.problem_id, s.is_correct, s.elapsed_seconds, s.submitted_at

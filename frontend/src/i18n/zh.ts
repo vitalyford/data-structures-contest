@@ -61,6 +61,7 @@ export const zh: Translations = {
   joinCodeLabel: '加入码',
   students: '学生',
   noStudents: '暂无学生',
+  removeStudent: '移除',
   noSessions: '暂无场次',
   noGroups: '暂无小组',
   active: '进行中',

@@ -6,6 +6,7 @@ import { Leaderboard } from '../components/Leaderboard'
 import { useLeaderboard } from '../hooks/useLeaderboard'
 
 interface Group { id: number; name: string; join_code: string; created_at: string }
+interface GroupMember { id: number; username: string; created_at: string }
 interface Session { id: number; name: string; group_id: number; duration_minutes: number; is_active: number; start_time: string | null; problem_set: string }
 interface SubmissionRow { id: number; user_id: number; username: string; problem_id: string; is_correct: number; elapsed_seconds: number; submitted_at: string }
 
@@ -36,6 +37,8 @@ export function AdminPage() {
   const [error, setError] = useState('')
   const [editingSessionId, setEditingSessionId] = useState<number | null>(null)
   const [editingDuration, setEditingDuration] = useState('')
+  const [groupMembers, setGroupMembers] = useState<Record<number, GroupMember[]>>({})
+  const [expandedGroups, setExpandedGroups] = useState<Set<number>>(new Set())
 
   const authHeader = useCallback(() => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }), [token])
 
@@ -84,6 +87,25 @@ export function AdminPage() {
   const deleteGroup = async (id: number) => {
     await fetch(`/api/admin/groups/${id}`, { method: 'DELETE', headers: authHeader() })
     fetchGroups()
+  }
+
+  const fetchGroupMembers = async (groupId: number) => {
+    const data = await fetch(`/api/admin/groups/${groupId}/students`, { headers: authHeader() })
+      .then(r => r.json()).catch(() => [])
+    setGroupMembers(prev => ({ ...prev, [groupId]: data }))
+  }
+
+  const toggleGroupExpand = async (groupId: number) => {
+    setExpandedGroups(prev => {
+      const next = new Set(prev)
+      if (next.has(groupId)) { next.delete(groupId) } else { next.add(groupId); fetchGroupMembers(groupId) }
+      return next
+    })
+  }
+
+  const removeStudent = async (groupId: number, userId: number) => {
+    await fetch(`/api/admin/groups/${groupId}/students/${userId}`, { method: 'DELETE', headers: authHeader() })
+    fetchGroupMembers(groupId)
   }
 
   const createSession = async () => {
@@ -162,11 +184,37 @@ export function AdminPage() {
             ) : (
               <div className="space-y-2">
                 {groups.map((g) => (
-                  <div key={g.id} className="flex items-center gap-4 bg-white rounded-xl ring-1 ring-gray-200 px-4 py-3">
-                    <span className="font-medium text-gray-800">{g.name}</span>
-                    <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded-lg text-gray-600">{g.join_code}</span>
-                    <span className="text-xs text-gray-400 ml-auto">{t.joinCodeLabel}</span>
-                    <button onClick={() => deleteGroup(g.id)} className="text-xs text-red-500 hover:text-red-700 font-medium">{t.deleteBtn}</button>
+                  <div key={g.id} className="bg-white rounded-xl ring-1 ring-gray-200">
+                    <div className="flex items-center gap-4 px-4 py-3">
+                      <span className="font-medium text-gray-800">{g.name}</span>
+                      <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded-lg text-gray-600">{g.join_code}</span>
+                      <span className="text-xs text-gray-400">{t.joinCodeLabel}</span>
+                      <button onClick={() => toggleGroupExpand(g.id)}
+                        className="ml-auto text-xs text-blue-500 hover:text-blue-700 font-medium">
+                        {expandedGroups.has(g.id) ? '▲' : '▼'} {t.students}
+                      </button>
+                      <button onClick={() => deleteGroup(g.id)} className="text-xs text-red-500 hover:text-red-700 font-medium">{t.deleteBtn}</button>
+                    </div>
+                    {expandedGroups.has(g.id) && (
+                      <div className="border-t border-gray-100 px-4 py-3">
+                        {!groupMembers[g.id] || groupMembers[g.id].length === 0 ? (
+                          <p className="text-gray-400 text-xs">{t.noStudents}</p>
+                        ) : (
+                          <ul className="space-y-1">
+                            {groupMembers[g.id].map(m => (
+                              <li key={m.id} className="flex items-center gap-3 text-sm">
+                                <span className="text-gray-700">{m.username}</span>
+                                <span className="text-xs text-gray-400 ml-auto">{new Date(m.created_at).toLocaleDateString()}</span>
+                                <button onClick={() => removeStudent(g.id, m.id)}
+                                  className="text-xs text-red-500 hover:text-red-700 font-medium">
+                                  {t.removeStudent}
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
