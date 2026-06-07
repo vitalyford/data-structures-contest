@@ -13,7 +13,7 @@ export const problemsB: Problem[] = [
     en: {
       title: 'Stack Trace Challenge II',
       teaching: `A **stack** uses **LIFO — Last In, First Out**. Each push adds to the top; each pop removes from the top. Trace every operation carefully — letters that were popped are **gone** and must not appear in the final answer.`,
-      description: `An empty stack goes through **12 operations**:\n\n1. push(A)\n2. push(B)\n3. push(C)\n4. pop()\n5. push(D)\n6. pop()\n7. pop()\n8. push(E)\n9. push(F)\n10. pop()\n11. push(G)\n12. push(H)\n\n**Drag the items into the correct slots to show the final stack state (bottom → top).** The pool contains all letters that were pushed — some are red herrings.`,
+      description: `An empty stack goes through **12 operations**:\n\n1. push(A)\n2. push(B)\n3. push(C)\n4. pop()\n5. push(D)\n6. pop()\n7. pop()\n8. push(E)\n9. push(F)\n10. pop()\n11. push(G)\n12. push(H)\n\n**Drag the items into the correct slots to show the final stack state (bottom → top).**`,
       data: {
         pool: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
         slots: 4,
@@ -23,7 +23,7 @@ export const problemsB: Problem[] = [
     zh: {
       title: '栈追踪挑战 II',
       teaching: `**栈**遵循**后进先出（LIFO）**原则。每次压栈在顶部添加元素；每次弹栈从顶部移除元素。仔细追踪每个操作——已弹出的字母**已消失**，不得出现在最终答案中。`,
-      description: `一个空栈经过 **12 次操作**：\n\n1. push(A)\n2. push(B)\n3. push(C)\n4. pop()\n5. push(D)\n6. pop()\n7. pop()\n8. push(E)\n9. push(F)\n10. pop()\n11. push(G)\n12. push(H)\n\n**将元素拖入正确的槽位，显示最终栈状态（底部 → 顶部）。** 候选池包含所有被压入过的字母——其中有些是干扰项。`,
+      description: `一个空栈经过 **12 次操作**：\n\n1. push(A)\n2. push(B)\n3. push(C)\n4. pop()\n5. push(D)\n6. pop()\n7. pop()\n8. push(E)\n9. push(F)\n10. pop()\n11. push(G)\n12. push(H)\n\n**将元素拖入正确的槽位，显示最终栈状态（底部 → 顶部）。**`,
       data: {
         pool: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
         slots: 4,

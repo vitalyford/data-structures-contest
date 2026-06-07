@@ -43,7 +43,7 @@ export const problems: Problem[] = [
     en: {
       title: 'Stack Trace Challenge',
       teaching: `A **stack** works like a stack of plates: you can only add (push) or remove (pop) from the **top**. This is called **LIFO — Last In, First Out**.\n\nTip: trace each operation one by one and update your mental picture of the stack. Items that get popped are **gone** — don't place them in the final answer.`,
-      description: `An empty stack goes through **9 operations**:\n\n1. push(F)\n2. push(G)\n3. pop()\n4. push(H)\n5. push(J)\n6. pop()\n7. pop()\n8. push(K)\n9. push(L)\n\n**Drag the items into the correct slots to show the final stack state (bottom → top).** The pool contains all letters that were pushed — some are red herrings.`,
+      description: `An empty stack goes through **9 operations**:\n\n1. push(F)\n2. push(G)\n3. pop()\n4. push(H)\n5. push(J)\n6. pop()\n7. pop()\n8. push(K)\n9. push(L)\n\n**Drag the items into the correct slots to show the final stack state (bottom → top).**`,
       data: {
         pool: ['F', 'G', 'H', 'J', 'K', 'L'],
         slots: 3,
@@ -53,7 +53,7 @@ export const problems: Problem[] = [
     zh: {
       title: '栈追踪挑战',
       teaching: `**栈**就像一叠盘子：你只能从**顶部**添加（压栈）或移除（弹栈）。这称为**后进先出（LIFO）**。\n\n提示：逐步追踪每个操作，实时更新脑海中的栈状态。被弹出的元素**已消失**——不要将它们放入最终答案。`,
-      description: `一个空栈经过 **9 次操作**：\n\n1. push(F)\n2. push(G)\n3. pop()\n4. push(H)\n5. push(J)\n6. pop()\n7. pop()\n8. push(K)\n9. push(L)\n\n**将元素拖入正确的槽位，显示最终栈状态（底部 → 顶部）。** 候选池包含所有被压入过的字母——其中有些是干扰项。`,
+      description: `一个空栈经过 **9 次操作**：\n\n1. push(F)\n2. push(G)\n3. pop()\n4. push(H)\n5. push(J)\n6. pop()\n7. pop()\n8. push(K)\n9. push(L)\n\n**将元素拖入正确的槽位，显示最终栈状态（底部 → 顶部）。**`,
       data: {
         pool: ['F', 'G', 'H', 'J', 'K', 'L'],
         slots: 3,
