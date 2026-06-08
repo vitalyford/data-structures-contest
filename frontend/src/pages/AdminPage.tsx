@@ -39,6 +39,7 @@ export function AdminPage() {
   const [editingDuration, setEditingDuration] = useState('')
   const [groupMembers, setGroupMembers] = useState<Record<number, GroupMember[]>>({})
   const [expandedGroups, setExpandedGroups] = useState<Set<number>>(new Set())
+  const [isShowingJoinCode, setIsShowingJoinCode] = useState<number | null>(null)
 
   const authHeader = useCallback(() => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }), [token])
 
@@ -187,8 +188,14 @@ export function AdminPage() {
                   <div key={g.id} className="bg-white rounded-xl ring-1 ring-gray-200">
                     <div className="flex items-center gap-4 px-4 py-3">
                       <span className="font-medium text-gray-800">{g.name}</span>
-                      <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded-lg text-gray-600">{g.join_code}</span>
+                      <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded-lg text-gray-600">
+                        {isShowingJoinCode === g.id ? g.join_code : '••••••'}
+                      </span>
                       <span className="text-xs text-gray-400">{t.joinCodeLabel}</span>
+                      <button onClick={() => setIsShowingJoinCode(isShowingJoinCode === g.id ? null : g.id)}
+                        className="ml-auto text-xs text-blue-500 hover:text-blue-700 font-medium">
+                        {isShowingJoinCode === g.id ? 'Hide' : 'Show'} {t.joinCode}
+                      </button>
                       <button onClick={() => toggleGroupExpand(g.id)}
                         className="ml-auto text-xs text-blue-500 hover:text-blue-700 font-medium">
                         {expandedGroups.has(g.id) ? '▲' : '▼'} {t.students}
