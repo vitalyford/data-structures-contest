@@ -40,6 +40,8 @@ export function AdminPage() {
   const [groupMembers, setGroupMembers] = useState<Record<number, GroupMember[]>>({})
   const [expandedGroups, setExpandedGroups] = useState<Set<number>>(new Set())
   const [isShowingJoinCode, setIsShowingJoinCode] = useState<number | null>(null)
+  const [pdfSet, setPdfSet] = useState<'A' | 'B'>('A')
+  const [pdfLoading, setPdfLoading] = useState<'problems' | 'answers' | null>(null)
 
   const authHeader = useCallback(() => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }), [token])
 
@@ -88,6 +90,24 @@ export function AdminPage() {
   const deleteGroup = async (id: number) => {
     await fetch(`/api/admin/groups/${id}`, { method: 'DELETE', headers: authHeader() })
     fetchGroups()
+  }
+
+  const downloadPdf = async (kind: 'problems' | 'answers') => {
+    setError('')
+    setPdfLoading(kind)
+    try {
+      const path = kind === 'problems' ? 'problems-pdf' : 'answers-pdf'
+      const r = await fetch(`/api/admin/${path}?set=${pdfSet}`, { headers: { Authorization: `Bearer ${token}` } })
+      if (!r.ok) throw new Error(t.pdfError)
+      const blob = await r.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = kind === 'problems' ? `problem-set-${pdfSet}.pdf` : `answer-key-${pdfSet}.pdf`
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch (e: unknown) { setError(e instanceof Error ? e.message : t.pdfError) }
+    setPdfLoading(null)
   }
 
   const fetchGroupMembers = async (groupId: number) => {
@@ -167,6 +187,24 @@ export function AdminPage() {
               {id === 'groups' ? t.groups : id === 'sessions' ? t.sessions : t.leaderboard}
             </button>
           ))}
+        </div>
+
+        {/* PDF export */}
+        <div className="flex flex-wrap items-center gap-3 bg-white rounded-xl ring-1 ring-gray-200 px-4 py-3">
+          <span className="text-sm font-medium text-gray-700">{t.pdfExport}</span>
+          <select value={pdfSet} onChange={(e) => setPdfSet(e.target.value as 'A' | 'B')}
+            className="text-sm rounded-lg ring-1 ring-gray-200 px-2 py-1.5 text-gray-700">
+            <option value="A">{t.problemSetA}</option>
+            <option value="B">{t.problemSetB}</option>
+          </select>
+          <button onClick={() => downloadPdf('problems')} disabled={pdfLoading !== null}
+            className="bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white text-sm font-medium px-4 py-1.5 rounded-lg transition-colors">
+            {pdfLoading === 'problems' ? t.pdfGenerating : t.downloadProblemsPdf}
+          </button>
+          <button onClick={() => downloadPdf('answers')} disabled={pdfLoading !== null}
+            className="bg-gray-700 hover:bg-gray-800 disabled:opacity-40 text-white text-sm font-medium px-4 py-1.5 rounded-lg transition-colors">
+            {pdfLoading === 'answers' ? t.pdfGenerating : t.downloadAnswersPdf}
+          </button>
         </div>
 
         {/* Groups tab */}

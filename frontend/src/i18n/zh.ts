@@ -85,4 +85,10 @@ export const zh: Translations = {
   // Drag
   dragHint: '将元素拖到正确位置',
   dropHere: '放在此处',
+  // PDF export
+  pdfExport: 'PDF 导出',
+  downloadProblemsPdf: '下载题目集（PDF）',
+  downloadAnswersPdf: '下载答案（PDF）',
+  pdfGenerating: '生成中…',
+  pdfError: 'PDF 生成失败',
 };

@@ -3,10 +3,32 @@ import db from '../db/database';
 import { authMiddleware } from '../middleware/auth';
 import { adminMiddleware } from '../middleware/admin';
 import { broadcast, buildLeaderboard } from '../websocket/broadcaster';
+import { getProblems } from '../data/problems';
+import { buildProblemsPdf, buildAnswersPdf } from '../pdf/problemSetPdf';
 import crypto from 'crypto';
 
 const router = Router();
 router.use(authMiddleware, adminMiddleware);
+
+// ── Problem set PDFs ──────────────────────────────────────────
+
+router.get('/problems-pdf', (req: Request, res: Response): void => {
+  const set = req.query.set === 'B' ? 'B' : 'A';
+  const doc = buildProblemsPdf(getProblems(set), set);
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `attachment; filename="problem-set-${set}.pdf"`);
+  doc.pipe(res);
+  doc.end();
+});
+
+router.get('/answers-pdf', (req: Request, res: Response): void => {
+  const set = req.query.set === 'B' ? 'B' : 'A';
+  const doc = buildAnswersPdf(getProblems(set), set);
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `attachment; filename="answer-key-${set}.pdf"`);
+  doc.pipe(res);
+  doc.end();
+});
 
 // ── Groups ──────────────────────────────────────────────────
 

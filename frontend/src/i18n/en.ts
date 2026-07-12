@@ -83,6 +83,12 @@ export const en = {
   // Drag
   dragHint: 'Drag items to the correct positions',
   dropHere: 'Drop here',
+  // PDF export
+  pdfExport: 'PDF Export',
+  downloadProblemsPdf: 'Download Problem Set (PDF)',
+  downloadAnswersPdf: 'Download Answer Key (PDF)',
+  pdfGenerating: 'Generating\u2026',
+  pdfError: 'Failed to generate PDF',
 };
 
 export type Translations = typeof en;
