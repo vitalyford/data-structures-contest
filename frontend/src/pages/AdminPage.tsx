@@ -110,6 +110,21 @@ export function AdminPage() {
     setPdfLoading(null)
   }
 
+  const downloadScoresCsv = async () => {
+    if (!selectedSession) return
+    setError('')
+    try {
+      const r = await fetch(`/api/admin/sessions/${selectedSession}/scores-csv`, { headers: { Authorization: `Bearer ${token}` } })
+      if (!r.ok) throw new Error(t.csvError)
+      const url = URL.createObjectURL(await r.blob())
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `scores-session-${selectedSession}.csv`
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch (e: unknown) { setError(e instanceof Error ? e.message : t.csvError) }
+  }
+
   const fetchGroupMembers = async (groupId: number) => {
     const data = await fetch(`/api/admin/groups/${groupId}/students`, { headers: authHeader() })
       .then(r => r.json()).catch(() => [])
@@ -353,7 +368,13 @@ export function AdminPage() {
             <div>
               {lbData ? (
                 <div className="space-y-6">
-                  <h2 className="font-semibold text-gray-800">Leaderboard — {sessions.find(s => s.id === selectedSession)?.name}</h2>
+                  <div className="flex items-center justify-between">
+                    <h2 className="font-semibold text-gray-800">Leaderboard — {sessions.find(s => s.id === selectedSession)?.name}</h2>
+                    <button onClick={downloadScoresCsv}
+                      className="text-sm bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700">
+                      {t.downloadScoresCsv}
+                    </button>
+                  </div>
                   <Leaderboard data={lbData} />
 
                   {sessionSubmissions.length > 0 && (

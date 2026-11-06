@@ -91,4 +91,6 @@ export const zh: Translations = {
   downloadAnswersPdf: '下载答案（PDF）',
   pdfGenerating: '生成中…',
   pdfError: 'PDF 生成失败',
+  downloadScoresCsv: '下载成绩（CSV）',
+  csvError: 'CSV 下载失败',
 };

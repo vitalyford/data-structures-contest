@@ -130,6 +130,36 @@ router.get('/sessions/:id/leaderboard', (req: Request, res: Response): void => {
   res.json(buildLeaderboard(id));
 });
 
+router.get('/sessions/:id/scores-csv', (req: Request, res: Response): void => {
+  const id = Number(req.params.id);
+  const session = db.prepare('SELECT name, problem_set FROM contest_sessions WHERE id = ?').get(id) as
+    { name: string; problem_set: string } | undefined;
+  if (!session) { res.status(404).json({ error: 'Session not found' }); return; }
+
+  const problems = getProblems(session.problem_set === 'B' ? 'B' : 'A');
+  const lb = buildLeaderboard(id) as {
+    rows: { username: string; points: number; perProblem: Record<string, { isCorrect: boolean }> }[];
+  };
+
+  // Prefix formula-like cells so spreadsheets don't execute them
+  const esc = (v: string | number): string => {
+    let s = String(v);
+    if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
+    return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+
+  const lines = [['Username', ...problems.map(p => p.id), 'Total'].map(esc).join(',')];
+  for (const row of lb.rows) {
+    const scores = problems.map(p => (row.perProblem[p.id]?.isCorrect ? p.points : 0));
+    lines.push([row.username, ...scores, row.points].map(esc).join(','));
+  }
+
+  const filename = `scores-${session.name.replace(/[^\w-]+/g, '_')}.csv`;
+  res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+  res.send('\uFEFF' + lines.join('\r\n') + '\r\n');
+});
+
 // ── Focus events per student ──────────────────────────────────
 
 router.get('/sessions/:id/focus/:userId', (req: Request, res: Response): void => {

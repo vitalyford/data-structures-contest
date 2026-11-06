@@ -89,6 +89,8 @@ export const en = {
   downloadAnswersPdf: 'Download Answer Key (PDF)',
   pdfGenerating: 'Generating\u2026',
   pdfError: 'Failed to generate PDF',
+  downloadScoresCsv: 'Download Scores (CSV)',
+  csvError: 'Failed to download CSV',
 };
 
 export type Translations = typeof en;
